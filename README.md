@@ -52,14 +52,14 @@ Each individual is linked to a seat number, ID badge, or access zone within the 
 <img style="display : block; margin: auto" width=500px height=500px alt="logo" src="https://github.com/user-attachments/assets/b1dbeaf1-9799-4fba-9031-5d10878b1868" />
 
 # **Screenshots**
+![image](https://github.com/user-attachments/assets/77079bd3-ea00-4e0f-a088-7bd3e2c5370d)
 
-# **Instruction** --- ananya
 
 # **Conclusion**
-Bhav-Chitran represents a meaningful fusion of technology and cultural insight, bridging the gap between artificial intelligence and human emotions. By leveraging deep learning to detect and interpret emotions, this project not only advances the field of emotional intelligence but also honors the Indian concept of "bhav" through its innovative approach. As we continue to refine and expand Bhav-Chitran, we envision a future where technology can empathetically understand and respond to human feelings, creating impactful solutions for mental health support
+Bhav-Chitran represents a meaningful fusion of technology and cultural insight, bridging the gap between artificial intelligence and human emotions. By leveraging deep learning to detect and interpret emotions, this project not only advances the field of emotional intelligence but also honors the Indian concept of "bhav" through its innovative approach. As we continue to refine and expand Bhav-Chitran, we envision a future where technology can empathetically understand and respond to human feelings, creating impactful solutions for mental health support.
 ![image](https://github.com/user-attachments/assets/b1dbeaf1-9799-4fba-9031-5d10878b1868)<br><hr>
 
-# 🚀Run Instructions:
+# Run Instructions:
 
 ## 1) Clone the repository<br>
 Start by cloning the repository to your local machine and navigate into the project directory:<br>
@@ -86,7 +86,7 @@ Then, open your browser and go to:<br>
 -->When prompted by the browser, allow access to the webcam.<br>
 
 -->The system will start detecting your emotions in real-time.<br>
-## 4.📁 Model Files<br>
+## 4. Model Files<br>
 -->This project uses pre-trained models from face-api.js. Ensure the following:<br>
 
 -->The models/ directory exists in the root.<br>
@@ -99,7 +99,7 @@ Then, open your browser and go to:<br>
 
 -->Place them inside the models/ folder.<br>
 
-## ✅ Requirements <br>
+## Requirements <br>
 -->A modern web browser (Chrome, Firefox, Edge)<br>
 
 -->Internet connection to load model files (if not hosted locally)<br>
