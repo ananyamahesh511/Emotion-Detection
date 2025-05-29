@@ -57,7 +57,6 @@ Each individual is linked to a seat number, ID badge, or access zone within the 
 
 # **Conclusion**
 Bhav-Chitran represents a meaningful fusion of technology and cultural insight, bridging the gap between artificial intelligence and human emotions. By leveraging deep learning to detect and interpret emotions, this project not only advances the field of emotional intelligence but also honors the Indian concept of "bhav" through its innovative approach. As we continue to refine and expand Bhav-Chitran, we envision a future where technology can empathetically understand and respond to human feelings, creating impactful solutions for mental health support.
-![image](https://github.com/user-attachments/assets/b1dbeaf1-9799-4fba-9031-5d10878b1868)<br><hr>
 
 # Run Instructions:
 
