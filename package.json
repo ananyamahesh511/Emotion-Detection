@@ -1,0 +1,12 @@
+{
+  "name": "emotion-detection",
+  "version": "1.0.0",
+  "description": "Emotion Detection with face-api.js",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+} 
