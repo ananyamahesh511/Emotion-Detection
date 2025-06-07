@@ -14,10 +14,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 const EmotionLog = require('./models/EmotionLog');
 const mongoose = require('mongoose');
 const emotionLogRoute = require('./routes/emotionLog');
+app.use('/api/emotion-logs', emotionLogRoute);
 const cors = require('cors');
 app.use(cors({
   origin: 'http://127.0.0.1:5501' // allow this origin (your frontend)
 }));
+
 
 
 
