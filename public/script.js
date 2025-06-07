@@ -158,7 +158,7 @@ async function captureScreenshot(emotion, faceBox, allDetections,confidence) {
     const screenshot = {
         emotion: emotion,
         timestamp: now,
-        dataUrl: tempCanvas.toDataURL('image/jpeg')
+        dataUrl: tempCanvas.toDataURL('image/jpeg',0.8)
     };
 
     screenshots.push(screenshot);
@@ -167,7 +167,8 @@ async function captureScreenshot(emotion, faceBox, allDetections,confidence) {
     }
 
     // Convert base64 to just the data part
-    const base64Image = screenshot.dataUrl.replace(/^data:image\/jpeg;base64,/, '');
+    const base64Image = screenshot.dataUrl.split(',')[1];
+
 
     // Match the face from the screenshot to find the student
     const singleFace = await faceapi
@@ -179,7 +180,7 @@ async function captureScreenshot(emotion, faceBox, allDetections,confidence) {
         const bestMatch = faceMatcher.findBestMatch(singleFace.descriptor);
         const matchedId = bestMatch.label;
 
-        if (matchedId !== 'unknown' && emotion === 'sad') {
+        if (matchedId !== 'unknown' && negativeEmotions.includes(emotion)) {
             console.log("📤 Sending emotion data to server...");
 
             fetch('http://localhost:5000/logEmotion', {
