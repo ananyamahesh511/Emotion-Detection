@@ -35,4 +35,32 @@ router.post('/logEmotion', async (req, res) => {
   }
 });
 
+router.delete('/:id', async (req, res) => {
+  try {
+    const log = await EmotionLog.findById(req.params.id);
+    if (!log) return res.status(404).json({ error: 'Log not found' });
+
+    // Extract filename from imageUrl
+    const filename = path.basename(log.imageUrl);
+    const filePath = path.join(__dirname, '..', 'uploads', filename);
+
+    // Delete the image file
+    fs.unlink(filePath, (err) => {
+      if (err) {
+        console.warn(`Could not delete file: ${filePath}`);
+      } else {
+        console.log(`Deleted file: ${filePath}`);
+      }
+    });
+
+    // Delete the MongoDB record
+    await log.deleteOne();
+
+    res.json({ success: true, message: 'Log and image deleted' });
+  } catch (err) {
+    console.error('Error deleting log:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 module.exports = router;
