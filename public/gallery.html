@@ -6,13 +6,26 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f5f5f5;
+      background: black;
+      color: #4CAF50;
       margin: 0;
       padding: 20px;
     }
 
+    #emotionFilter{
+      color: #4CAF50;
+      background-color: black;
+      border: none;
+      margin-top: 10px;
+      font-family: Arial, sans-serif;
+    }
+
     h1 {
       text-align: center;
+      border: 2px solid white;
+      border-radius: 9px;
+      padding: 30px;
+      font-size: 40px;
     }
 
     .filter {
@@ -23,12 +36,12 @@
     .gallery {
       display: flex;
       flex-wrap: wrap;
-      justify-content: center;
-      gap: 16px;
+      justify-content: space-evenly;
+      gap: 50px;
     }
 
     .card {
-      background: #fff;
+      background: black;
       border-radius: 10px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       width: 220px;
@@ -47,8 +60,8 @@
     }
 
     .info {
-      margin-top: 10px;
-      font-size: 14px;
+      margin-top: 20px;
+      font-size: 18px;
     }
   </style>
 </head>
@@ -59,13 +72,10 @@
     <label for="emotionFilter">Filter by Emotion:</label>
     <select id="emotionFilter" onchange="applyFilter()">
       <option value="">All</option>
-      <option value="happy">Happy</option>
       <option value="sad">Sad</option>
       <option value="angry">Angry</option>
-      <option value="surprised">Surprised</option>
       <option value="fearful">Fearful</option>
       <option value="disgusted">Disgusted</option>
-      <option value="neutral">Neutral</option>
     </select>
   </div>
 
