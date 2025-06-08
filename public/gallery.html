@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Emotion Gallery</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .filter {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .gallery {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      width: 220px;
+      padding: 10px;
+      transition: transform 0.2s;
+    }
+
+    .card:hover {
+      transform: scale(1.05);
+    }
+
+    .card img {
+      width: 100%;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .info {
+      margin-top: 10px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Emotion Log Gallery</h1>
+
+  <div class="filter">
+    <label for="emotionFilter">Filter by Emotion:</label>
+    <select id="emotionFilter" onchange="applyFilter()">
+      <option value="">All</option>
+      <option value="happy">Happy</option>
+      <option value="sad">Sad</option>
+      <option value="angry">Angry</option>
+      <option value="surprised">Surprised</option>
+      <option value="fearful">Fearful</option>
+      <option value="disgusted">Disgusted</option>
+      <option value="neutral">Neutral</option>
+    </select>
+  </div>
+
+  <div class="gallery" id="gallery">
+    <p>Loading...</p>
+  </div>
+
+  <script>
+    const peopleDatabase = {
+      "1": "Ananya M",
+      "2": "Nitya Sri Deepak Raj",
+      "3": "Aishwarya S",
+      // Add more student IDs and names as needed
+    };
+
+    let allLogs = [];
+
+    async function loadGallery() {
+      try {
+        const res = await fetch('/api/logEmotion');
+        if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+        const data = await res.json();
+        allLogs = data;
+        displayLogs(allLogs);
+      } catch (err) {
+        console.error("❌ Failed to load gallery:", err);
+        document.getElementById('gallery').innerHTML = `<p>Error loading logs.</p>`;
+      }
+    }
+
+    function applyFilter() {
+      const selected = document.getElementById('emotionFilter').value;
+      const filtered = selected ? allLogs.filter(log => log.emotion === selected) : allLogs;
+      displayLogs(filtered);
+    }
+
+    function displayLogs(logs) {
+      const gallery = document.getElementById('gallery');
+      gallery.innerHTML = '';
+
+      if (logs.length === 0) {
+        gallery.innerHTML = '<p>No logs found for this emotion.</p>';
+        return;
+      }
+
+      logs.forEach(log => {
+        const card = document.createElement('div');
+        card.className = 'card';
+
+        const studentName = peopleDatabase[String(log.studentId)] || 'Unknown';
+
+        const date = new Date(log.timestamp);
+        const formattedDate = isNaN(date.getTime()) ? 'Unknown time' : date.toLocaleString();
+
+        const imageUrl = log.screenshotPath || '#';
+        const previewImage = log.screenshotData || imageUrl;
+
+        card.innerHTML = `
+          <a href="${imageUrl}" target="_blank">
+            <img src="${log.screenshotData}" alt="Screenshot">
+          </a>
+          <div class="info">
+            <strong>Name:</strong> ${studentName} <br>
+            <strong>Emotion:</strong> ${log.emotion} <br>
+            <strong>Time:</strong> ${formattedDate}
+          </div>
+        `;
+
+        gallery.appendChild(card);
+      });
+    }
+
+    loadGallery();
+  </script>
+</body>
+</html>

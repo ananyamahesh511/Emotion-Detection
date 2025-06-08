@@ -20,9 +20,18 @@ app.use(cors({
   origin: 'http://127.0.0.1:5501' // allow this origin (your frontend)
 }));
 
+// Get all emotion logs
+app.get('/', async (req, res) => {
+  try {
+    const logs = await EmotionLog.find({}, 'studentId emotion timestamp screenshotPath').sort({ timestamp: -1 });
+    res.json(logs);
+  } catch (error) {
+    console.error('Failed to fetch logs:', error);
+    res.status(500).json({ message: 'Error fetching logs' });
+  }
+});
 
-
-
+//mongoose connections
 mongoose.connect('mongodb://localhost:27017/emotionDB', {
     useNewUrlParser: true,
     useUnifiedTopology: true
@@ -35,8 +44,6 @@ app.use(express.json());
 
 app.use('/models', express.static(path.join(__dirname, 'models')));
 
-
-
 //routes
 app.get('/test-image', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'placeholder-avatar.jpg'));
@@ -48,7 +55,29 @@ app.get('/test', (req, res) => {
 });
 
 
-app.use('/', emotionLogRoute);
+
+
+//Gallery 
+app.get('/gallery', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'gallery.html'));
+});
+
+
+const uploadsDir = path.join(__dirname, 'uploads');
+
+app.get('/api/gallery', (req, res) => {
+  fs.readdir(uploadsDir, (err, files) => {
+    if (err) {
+      console.error('Error reading uploads:', err);
+      return res.status(500).json({ error: 'Failed to load images' });
+    }
+
+    // Filter only .jpg or .png files
+    const images = files.filter(file => /\.(jpg|jpeg|png)$/.test(file));
+    res.json(images);
+  });
+});
+
 
 // Ensure screenshots folder exists
 const screenshotDir = path.join(__dirname, 'uploads');
@@ -89,7 +118,7 @@ app.post('/logEmotion', (req, res) => {
         EmotionLog.create({
             studentId,
             emotion,
-            timestamp,
+            timestamp: new Date(timestamp),
             screenshotPath: `uploads/${filename}`
         })
         .then(() => {
@@ -102,6 +131,40 @@ app.post('/logEmotion', (req, res) => {
         });
     });
 });
+
+//gallery
+app.get('/api/logEmotion', async (req, res) => {
+  try {
+    const logs = await EmotionLog.find().sort({ timestamp: -1 });
+
+    const logsWithImages = await Promise.all(
+      logs.map(async (log) => {
+        const imagePath = path.join(__dirname, log.screenshotPath);
+        try {
+          const imageBuffer = await fs.promises.readFile(imagePath);
+          const base64Image = `data:image/jpeg;base64,${imageBuffer.toString('base64')}`;
+
+          return {
+            studentId: log.studentId,
+            emotion: log.emotion,
+            timestamp: log.timestamp,
+            screenshotData: base64Image
+          };
+        } catch (err) {
+          console.error(`Failed to read image for log ${log._id}:`, err);
+          return null; // skip this log
+        }
+      })
+    );
+
+    // Filter out any null logs (due to missing images)
+    res.json(logsWithImages.filter(log => log !== null));
+  } catch (error) {
+    console.error('Failed to fetch logs with images:', error);
+    res.status(500).json({ message: 'Error fetching logs' });
+  }
+});
+app.use('/', emotionLogRoute);
 
 // Start the server
 app.listen(PORT, () => {

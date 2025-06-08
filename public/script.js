@@ -43,12 +43,31 @@ const EMOTION_UPDATE_INTERVAL = 500; // Update emotion every 500ms
 const peopleDatabase = [
     {
         id: "1",
-        name: "Ananya",
+        name: "Ananya M",
         photo: "placeholder-avatar.jpg",
         contact: {
             phone: "9945565509",
-            email: "ann@gmail.com.com",
-            address: "Bangalore"
+            email: "alphatype4582@gmail.com",
+            address: "Rajajinagar,Bangalore"
+        }
+    },
+    {
+        id: "2",
+        name: "Nitya Sri Deepak Raj",
+        photo: "nit_img.jpg",  // Make sure this path is correct
+        contact: {
+            phone: "9731784801",
+            email: "nityasrid123@gmail.com",
+            address: "Banashankari,Bangalore"
+        }
+    },{
+        id: "3",
+        name: "Aishwarya S",
+        photo: "Aish_img.jpg",  // Make sure this path is correct
+        contact: {
+            phone: "8451040475",
+            email: "aishwaryasreepathy@gmail.com",
+            address: "Sheshadripuram,Bangalore"
         }
     }
 ];
@@ -116,7 +135,7 @@ function getStableEmotion(expressions, faceId) {
 }
 
 // Function to capture screenshot
-async function captureScreenshot(emotion, faceBox, allDetections,confidence) {
+async function captureScreenshot(emotion, faceBox, allDetections, confidence) {
 
     console.log(`📸 Attempting to capture screenshot: ${emotion}, confidence: ${confidence}`);
 
@@ -158,7 +177,7 @@ async function captureScreenshot(emotion, faceBox, allDetections,confidence) {
     const screenshot = {
         emotion: emotion,
         timestamp: now,
-        dataUrl: tempCanvas.toDataURL('image/jpeg',0.8)
+        dataUrl: tempCanvas.toDataURL('image/jpeg', 0.8)
     };
 
     screenshots.push(screenshot);
@@ -190,7 +209,7 @@ async function captureScreenshot(emotion, faceBox, allDetections,confidence) {
                     studentId: matchedId,
                     emotion: emotion,
                     timestamp: now,
-                    screenshotData: base64Image
+                    screenshotData: screenshot.dataUrl
                 })
             })
                 .then(res => res.json())
@@ -348,15 +367,33 @@ async function processFrame() {
                 screenshotQueue = [];
 
                 // Check each face for negative emotions
-                detections.forEach((detection, index) => {
+                for (const [index, detection] of detections.entries()) {
                     const { emotion, confidence } = getStableEmotion(detection.expressions, index);
+
                     if (negativeEmotions.includes(emotion) && confidence > EMOTION_THRESHOLD) {
-                        // Pass all detections to capture screenshot for multiple faces
-                        captureScreenshot(emotion, detection.detection.box, detections,confidence);
-                        // Update person details for any person with negative emotion
-                        updatePersonDetails(peopleDatabase[0]);
+                        captureScreenshot(emotion, detection.detection.box, detections, confidence);
+
+                        // Recognize the person
+                        const singleFace = await faceapi
+                            .detectSingleFace(video, new faceapi.TinyFaceDetectorOptions())
+                            .withFaceLandmarks()
+                            .withFaceDescriptor();
+
+                        if (singleFace) {
+                            const bestMatch = faceMatcher.findBestMatch(singleFace.descriptor);
+                            const matchedId = bestMatch.label;
+
+                            // Find person from database
+                            const person = peopleDatabase.find(p => p.id === matchedId);
+                            if (person) {
+                                updatePersonDetails(person);
+                            } else {
+                                updatePersonDetails(null); // fallback
+                            }
+                        }
                     }
-                });
+                }
+
             }
 
             drawDetections(detections);
